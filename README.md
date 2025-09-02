@@ -10,6 +10,7 @@
 * ✅ **完整用户认证**：注册、登录、验证、重置密码、用户管理
 * ✅ **JWT 认证**：内置 Database Strategy，支持 Token 存储与过期控制
 * ✅ **数据库抽象**：SQLAlchemy + Async，自动建表
+* ✅ **时间戳混入 (DateTimeMixin)**：自动维护 `created_at` / `updated_at` 字段，兼容 Postgres & SQLite，无需人工干预
 * ✅ **健康检查**：内置 `/health`、`/db-check`
 * ✅ **可扩展架构**：清晰的 `core / models / schemas` 分层
 
@@ -21,6 +22,7 @@
 app/
   core/          # 配置、数据库、用户管理器
   models/        # SQLAlchemy 模型 (User / AccessToken)
+    mixin.py     # 提供 DateTimeMixin，可复用到任意模型
   schemas/       # Pydantic 模型 (UserRead / Create / Update)
   lifespan.py    # 应用生命周期钩子 (启动/关闭)
   main.py        # FastAPI 入口
@@ -96,6 +98,34 @@ uvicorn app.main:app --reload
 | `/authenticated-route`  | GET  | 示例需要登录的路由 |
 | `/health`               | GET  | 健康检查      |
 | `/db-check`             | GET  | 数据库连通性检查  |
+
+---
+
+## 🕒 使用 DateTimeMixin（自动时间戳）
+
+本项目预置了一个 `DateTimeMixin`，可添加到任意模型中：
+
+```python
+# app/models/mixin.py
+from app.models.mixin import DateTimeMixin
+from app.models.base import Base
+from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String
+
+class Article(DateTimeMixin, Base):
+    __tablename__ = "article"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(200))
+```
+
+效果：
+
+* 新增记录时自动写入 `created_at`、`updated_at`
+* 更新记录时自动刷新 `updated_at`
+* 在 **Postgres** 使用 `server_default=func.now()` / `onupdate=func.now()`
+* 在 **SQLite** 自动退化为 Python 应用层的 `datetime.utcnow`
+
+无需人工干预，保证两种数据库行为一致。
 
 ---
 
