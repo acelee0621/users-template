@@ -132,7 +132,7 @@ class Article(DateTimeMixin, Base):
 ## 🛠️ 技术栈
 
 * [FastAPI](https://fastapi.tiangolo.com/)
-* [FastAPI Users](https://frankie567.github.io/fastapi-users/)
+* [FastAPI Users](https://fastapi-users.github.io/)
 * [SQLAlchemy 2.0 Async](https://docs.sqlalchemy.org/en/20/)
 * [PostgreSQL + asyncpg](https://magicstack.github.io/asyncpg/current/)
 * [SQLite + aiosqlite](https://aiosqlite.omnilib.dev/en/stable/)
