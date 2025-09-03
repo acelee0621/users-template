@@ -149,6 +149,14 @@ class Article(DateTimeMixin, Base):
 * 提供 **前端示例** (React / Vue 登录表单)
 
 ---
+## 📬 联系
+
+* 微信公众号：**码间絮语**
+<center>
+  <img src="https://github.com/acelee0621/fastapi-users-turtorial/blob/main/QRcode.png" width="500" alt="签名图">
+</center>
+
+* 欢迎 Star ⭐ & 关注，获取最新教程和代码更新。
 
 ## 📜 License
 
