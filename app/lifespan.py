@@ -5,7 +5,11 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from loguru import logger
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncEngine, AsyncSession
+from sqlalchemy.ext.asyncio import (
+    async_sessionmaker,
+    AsyncSession,
+    AsyncEngine,
+)
 
 from app.core.config import get_settings
 from app.core.database import (
@@ -14,11 +18,13 @@ from app.core.database import (
     create_db_and_tables,
 )
 
+
 class AppState(TypedDict):
     """
     定义应用生命周期中共享状态的结构。
     这为类型检查器和编辑器提供了明确的类型信息。
     """
+
     engine: AsyncEngine
     session_factory: async_sessionmaker[AsyncSession]
 

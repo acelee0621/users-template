@@ -1,5 +1,5 @@
 # app/core/database.py
-from typing import AsyncGenerator
+from typing import AsyncGenerator, cast
 
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
@@ -58,8 +58,10 @@ async def get_db(request: Request) -> AsyncGenerator[AsyncSession, None]:
     为每个请求或任务提供数据库会话。
     它依赖于 lifespan 中初始化的 session_factory。
     """
-    session_factory: async_sessionmaker[AsyncSession] = request.state.session_factory
 
+    session_factory = cast(
+        async_sessionmaker[AsyncSession], request.state.session_factory
+    )  # 显式告诉类型检查器 request.state.session_factory 是 async_sessionmaker[AsyncSession]
     async with session_factory() as session:
         yield session
 
