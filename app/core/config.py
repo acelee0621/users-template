@@ -22,12 +22,17 @@ class Settings(BaseSettings):
     DB_PASSWORD: str = "postgres"
     DB_NAME: str = "fastapi_users"
 
-    # 连接池配置（仅 Postgres 有效）
-    POOL_SIZE: int = 20
-    MAX_OVERFLOW: int = 10
-    POOL_TIMEOUT: int = 30
-    POOL_RECYCLE: int = 3600
-    ECHO: bool = False
+    # 连接池配置（仅 PostgreSQL 有效）
+    # --- 必选参数：中等并发常用 ---
+    POOL_SIZE: int = 20        # 连接池基础大小，低：- 高：+
+    MAX_OVERFLOW: int = 10     # 超出 pool_size 的最大连接数，低：- 高：+
+    POOL_TIMEOUT: int = 30     # 获取连接超时时间（秒），低：+ 高：-
+    POOL_PRE_PING: bool = True # 取连接前是否检查可用性，低：False 高：True
+
+    # --- 可选调优参数（高级场景） ---
+    POOL_RECYCLE: int = 3600   # 连接最大存活时间（秒），低：+ 高：-，避免长连接被数据库踢掉
+    # POOL_USE_LIFO: bool = False # 连接池取连接顺序，False=FIFO（默认），True=LIFO 可提高高并发命中率
+    ECHO: bool = False          # 是否打印 SQL，开发可打开，生产关闭
 
     # SQLite 配置
     SQLITE_PATH: str = "./db.sqlite3"
@@ -55,6 +60,7 @@ class Settings(BaseSettings):
                 "max_overflow": self.MAX_OVERFLOW,
                 "pool_timeout": self.POOL_TIMEOUT,
                 "pool_recycle": self.POOL_RECYCLE,
+                # "pool_use_lifo": self.POOL_USE_LIFO,
                 "echo": self.ECHO,
             }
         # SQLite 不支持 pool 设置，返回最小参数
